@@ -54,7 +54,7 @@ object App {
       .when(col("ts") === "O", 1)
       .otherwise("Unknown")).drop("ts")
 
-
+    // calculate the right quantity of medication
 
     df = df.withColumn("quantite_med",col("quantite_med") - col("quantite_rejetee")).drop("quantite_rejetee")
 

@@ -1,0 +1,209 @@
+# keyspace : 
+
+CREATE KEYSPACE frauddetection WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 1};
+   
+ #1# History tables ; 
+ 
+CREATE TABLE history(id double, date date,status int,type int ,date_debut date , date_fin date, PRIMARY KEY(id,type));
+   
+   
+ #2# parametre tables ; 
+ 
+ CREATE TABLE params (param text  PRIMARY KEY, value counter);
+  
+	#2.1# parametre tables : insert two params ; 
+
+		INSERT INTO params (param) VALUES ('Max_Id_Entrainement_Quantity') 
+	
+		INSERT INTO params (param) 
+		VALUES (Max_Id_Entrainement_Ppa) 
+	#2.2# parametre tables : update the counter params ; 
+
+	   UPDATE params SET value = value + 1 WHERE param = 'Max_Id_Entrainement_Ppa';
+	 
+	   UPDATE params SET value = value + 1 WHERE param = 'Max_Id_Entrainement_Quantity';
+		  
+		  
+ #3# quantity tables ; 
+ 
+ CREATE TABLE quantity_source (
+ id int , 
+ gender int,
+ ts int , 
+ affection text , 
+ age int , 
+ date_paiment date , 
+ fk text , 
+ codeps double ,
+ num_enr double ,
+ quantite_med double , 
+ region int ,
+ no_assure double,
+ PRIMARY KEY(date_paiment , id)
+);
+
+
+
+ CREATE TABLE quantity_verified (
+ id int , 
+ gender int,
+ ts int , 
+ affection text , 
+ age int , 
+ date_paiment date , 
+ fk text , 
+ codeps double ,
+ num_enr double ,
+ quantite_med double , 
+ wilaya int ,
+ no_assure double,
+ PRIMARY KEY(date_paiment , id)
+);
+
+
+
+CREATE TABLE quantity_result (
+ id uuid , 
+ id_entrainement double ,
+ qte_rejet_predicted int , 
+ count_medicament int ,
+ count_medicament_suspected int ,
+ date_entrainement date ,
+ date_debut date ,
+ date_fin date,
+ gender int,
+ ts int , 
+ affection text , 
+ age int , 
+ date_paiment date , 
+ fk text , 
+ codeps double ,
+ num_enr double ,
+ quantite_med double , 
+ no_assure double,
+ wilaya int,
+ PRIMARY KEY(num_enr , id_entrainement id)
+);
+
+
+CREATE TABLE quantity_assure (
+ id uuid , 
+ id_entrainement double ,
+ qte_rejet_predicted int , 
+ count_assure int ,
+ count_medicament_suspected int ,
+ date_entrainement date ,
+ date_debut date ,
+ date_fin date,
+ gender int,
+ ts int , 
+ affection text , 
+ age int , 
+ date_paiment date , 
+ fk text , 
+ codeps double ,
+ num_enr double ,
+ quantite_med double , 
+ no_assure double,
+ wilaya int,
+ PRIMARY KEY(no_assure , id_entrainement, id)
+);
+
+
+
+
+
+CREATE TABLE notification (
+ id uuid , 
+ id_entrainement double ,
+ msg text , 
+ seen int , 
+ status int , 
+ type int ,
+ PRIMARY KEY(seen , id)
+);
+
+
+
+		  
+ #4# ppa tables ; 
+ 
+ CREATE TABLE ppa_source (
+ id int , 
+ ts int , 
+ date_paiment date , 
+ fk text , 
+ codeps double ,
+ num_enr double ,
+ wilaya int ,
+ prix_ppa double,
+ PRIMARY KEY(date_paiment , id)
+);
+
+
+
+
+ CREATE TABLE ppa_result (
+ id int , 
+ ts int , 
+ id_entrainement double , 
+ count_pharmacy int,
+ count_medicament int,
+ count_medicament_sup int ,
+ count_medicament_inf int,
+ date_debut date , 
+ date_fin date,
+ date_entrainement date,
+ date_paiment date , 
+ fk text , 
+ codeps double ,
+ num_enr double ,
+ wilaya int ,
+ prix_ppa double,
+ prix_min double , 
+ prix_max double,
+ outside int,
+ PRIMARY KEY(num_enr , id_entrainement, id)
+);
+
+ CREATE TABLE ppa_pharmacy (
+ id int , 
+ ts int , 
+ id_entrainement double , 
+ count_pharmacy int,
+ count_medicament int,
+ count_medicament_sup int ,
+ count_medicament_inf int,
+ fk text , 
+ codeps double ,
+ num_enr double ,
+ wilaya int ,
+ prix_ppa double,
+ prix_min double , 
+ prix_max double,
+ outside int,
+ PRIMARY KEY(codeps , id_entrainement, id)
+);
+
+
+
+
+
+//////////////////// oracle 
+
+CREATE TABLE fraud
+(
+   id NUMBER(6) PRIMARY KEY,
+   gender VARCHAR2(25),
+   ts VARCHAR2(2),
+   affection VARCHAR2(25),
+   age NUMBER(10) ,
+   date_paiment DATE NOT NULL,
+   codeps NUMBER(10),
+   fk NUMBER(38),
+   num_enr NUMBER(10),
+   quantite_med NUMBER(10),
+   quantite_rejetee NUMBER(10),
+   region NUMBER(5) ,
+   no_assure NUMBER(25) 
+);
