@@ -35,18 +35,10 @@ object App {
     val sqlContext = spark.sqlContext
     // property : (1)  : user , (2) : pwd , (3) : host , (4): ass
     val url = "jdbc:oracle:thin:" + property(1) + "/" + property(2) + "@//" + property(3) + "/" + property(4)
-    val query = "(select id , gender , ts , affection , age , date_paiment , codeps , fk , num_enr , quantite_med  , region , no_assure  , quantite_rejetee from fraud  where  quantite_rejetee > 0  and  new =1  ) s"
+    val query = "(select id , ts , date_paiment , codeps , fk , num_enr , region , no_assure ,prix_ppa    from fraud where new =1 and applic_tarif = 'O' ) s"
     var df = sqlContext.read.format("jdbc").options(Map("url" -> url, "user" -> property(1), "password" -> property(2), "dbtable" -> query, "driver" -> "oracle.jdbc.driver.OracleDriver")).load()
     df.printSchema()
     df.show
-
-    /** **********************  tranform  *********************** */
-
-    // Transform the gender column from F/M to O/1
-
-    df = df.withColumn("New_GENDER", when(col("GENDER") === "M", 0)
-      .when(col("GENDER") === "F", 1)
-      .otherwise("Unknown")).drop("Gender")
 
     // Transform the ts column from N/O to O/1
 
@@ -56,7 +48,6 @@ object App {
 
 
 
-    df = df.withColumn("quantite_med",col("quantite_med") - col("quantite_rejetee")).drop("quantite_rejetee")
 
     // Transform the spark data frame to RDD
     val rows: RDD[Row] = df.rdd
@@ -65,7 +56,7 @@ object App {
     /** **********************  Load  *********************** */
 
     val conf = new SparkConf(true).set("spark.cassandra.connection.host", "127.0.0.1");
-    rows.saveToCassandra("frauddetection", "quantity_verified", SomeColumns("id", "affection", "age", "date_paiment", "codeps", "fk", "num_enr", "quantite_med", "region", "no_assure", "gender", "ts"));
+    rows.saveToCassandra("frauddetection", "ppa_source", SomeColumns("id", "date_paiment", "codeps", "fk", "num_enr","region", "no_assure", "prix_ppa" ,"ts"));
 
 
     /* Verification

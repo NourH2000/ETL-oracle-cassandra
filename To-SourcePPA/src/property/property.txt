@@ -1,0 +1,5 @@
+### User name , password , host , ass
+frauddetection
+sys
+localhost
+xe

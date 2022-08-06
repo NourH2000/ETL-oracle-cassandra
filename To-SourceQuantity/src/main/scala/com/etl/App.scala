@@ -35,7 +35,7 @@ object App {
     val sqlContext = spark.sqlContext
     // property : (1)  : user , (2) : pwd , (3) : host , (4): ass
     val url = "jdbc:oracle:thin:" + property(1) + "/" + property(2) + "@//" + property(3) + "/" + property(4)
-    val query = "(select id , gender , ts , affection , age , date_paiment , codeps , fk , num_enr , quantite_med  , region , no_assure     from fraud) s"
+    val query = "(select id , gender , ts , affection , age , date_paiment , codeps , fk , num_enr , quantite_med  , region , no_assure     from fraud where new =1  and quantite_rejetee = 0 or quantite_rejetee IS NOT NULL ) s"
     var df = sqlContext.read.format("jdbc").options(Map("url" -> url, "user" -> property(1), "password" -> property(2), "dbtable" -> query, "driver" -> "oracle.jdbc.driver.OracleDriver")).load()
     df.printSchema()
     df.show
