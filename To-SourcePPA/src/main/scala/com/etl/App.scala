@@ -35,7 +35,7 @@ object App {
     val sqlContext = spark.sqlContext
     // property : (1)  : user , (2) : pwd , (3) : host , (4): ass
     val url = "jdbc:oracle:thin:" + property(1) + "/" + property(2) + "@//" + property(3) + "/" + property(4)
-    val query = "(select id , ts , date_paiment , codeps , fk , num_enr , region , no_assure ,prix_ppa    from fraud where new =1 and applic_tarif = 'O' ) s"
+    val query = "(select id , ts , date_paiment , codeps , fk , num_enr , region , no_assure ,prix_ppa , tier_payant    from fraud where new =1 and applic_tarif = 'O' ) s"
     var df = sqlContext.read.format("jdbc").options(Map("url" -> url, "user" -> property(1), "password" -> property(2), "dbtable" -> query, "driver" -> "oracle.jdbc.driver.OracleDriver")).load()
     df.printSchema()
     df.show
@@ -56,7 +56,7 @@ object App {
     /** **********************  Load  *********************** */
 
     val conf = new SparkConf(true).set("spark.cassandra.connection.host", "127.0.0.1");
-    rows.saveToCassandra("frauddetection", "ppa_source", SomeColumns("id", "date_paiment", "codeps", "fk", "num_enr","region", "no_assure", "prix_ppa" ,"ts"));
+    rows.saveToCassandra("frauddetection", "ppa_source", SomeColumns("id", "date_paiment", "codeps", "fk", "num_enr","region", "no_assure", "prix_ppa" ,"tier_payant" ,"ts" ));
 
 
     /* Verification

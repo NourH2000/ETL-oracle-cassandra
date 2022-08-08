@@ -1,0 +1,9 @@
+Notes to do  : 
+
+    1/ the History table : i need to swich between id and type, because the history request need an allow filtering 
+    2/ ajouter no_assuree a la table pharmacy ppa 
+    3/ prix ppa : par pharmacy , i need to rewrite them with the table , By pharmacy because they are done with ppa_rsult
+    4/ the notification bar 
+    5/ add the ts charts  and columns , 
+    6/ add the tier_payan chart and column 
+    7/ ask him for the raison of verification column 

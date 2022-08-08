@@ -11,12 +11,7 @@ CREATE TABLE history(id double, date date,status int,type int ,date_debut date ,
  
  CREATE TABLE params (param text  PRIMARY KEY, value counter);
   
-	#2.1# parametre tables : insert two params ; 
-
-		INSERT INTO params (param) VALUES ('Max_Id_Entrainement_Quantity') 
 	
-		INSERT INTO params (param) 
-		VALUES (Max_Id_Entrainement_Ppa) 
 	#2.2# parametre tables : update the counter params ; 
 
 	   UPDATE params SET value = value + 1 WHERE param = 'Max_Id_Entrainement_Ppa';
@@ -55,7 +50,7 @@ CREATE TABLE history(id double, date date,status int,type int ,date_debut date ,
  codeps double ,
  num_enr double ,
  quantite_med double , 
- wilaya int ,
+ region int ,
  no_assure double,
  PRIMARY KEY(date_paiment , id)
 );
@@ -81,8 +76,8 @@ CREATE TABLE quantity_result (
  num_enr double ,
  quantite_med double , 
  no_assure double,
- wilaya int,
- PRIMARY KEY(num_enr , id_entrainement id)
+ region int,
+ PRIMARY KEY(num_enr , id_entrainement ,  id)
 );
 
 
@@ -105,7 +100,7 @@ CREATE TABLE quantity_assure (
  num_enr double ,
  quantite_med double , 
  no_assure double,
- wilaya int,
+ region int,
  PRIMARY KEY(no_assure , id_entrainement, id)
 );
 
@@ -135,8 +130,10 @@ CREATE TABLE notification (
  fk text , 
  codeps double ,
  num_enr double ,
- wilaya int ,
+ region int ,
  prix_ppa double,
+ tier_payant int ,
+ no_assure double,
  PRIMARY KEY(date_paiment , id)
 );
 
@@ -150,7 +147,7 @@ CREATE TABLE notification (
  count_pharmacy int,
  count_medicament int,
  count_medicament_sup int ,
- count_medicament_inf int,
+ count_medicament_inf int, 
  date_debut date , 
  date_fin date,
  date_entrainement date,
@@ -158,11 +155,13 @@ CREATE TABLE notification (
  fk text , 
  codeps double ,
  num_enr double ,
- wilaya int ,
+ region int ,
  prix_ppa double,
  prix_min double , 
  prix_max double,
  outside int,
+ tier_payant int ,
+ count_medicament_suspected int ,
  PRIMARY KEY(num_enr , id_entrainement, id)
 );
 
@@ -177,11 +176,13 @@ CREATE TABLE notification (
  fk text , 
  codeps double ,
  num_enr double ,
- wilaya int ,
+ region int ,
  prix_ppa double,
  prix_min double , 
  prix_max double,
  outside int,
+ tier_payant int ,
+ date_paiment date , 
  PRIMARY KEY(codeps , id_entrainement, id)
 );
 
