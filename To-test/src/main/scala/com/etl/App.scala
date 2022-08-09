@@ -35,8 +35,7 @@ object App {
     val sqlContext = spark.sqlContext
     // property : (1)  : user , (2) : pwd , (3) : host , (4): ass
     val url = "jdbc:oracle:thin:" + property(1) + "/" + property(2) + "@//" + property(3) + "/" + property(4)
-    //val query = "(select id , gender , ts , affection , age , date_paiment , codeps , fk , num_enr , quantite_med  , region , no_assure  , quantite_rejetee from fraud  where  quantite_rejetee > 0  and  new =1  ) s"
-    val query = "(select id , gender , ts , affection , age , date_paiment , codeps , fk , num_enr , quantite_med  , region , no_assure  , quantite_rejetee from fraud  where  quantite_rejetee > 0  and  new =1  ) s"
+    val query = "(select id , sexe as gender , ts , affection , age , date_paiment , codeps , fk , num_enr , quantite_med  , centre as region , no_assure  , quantite_rejetee , prix_ppa from fraud   ) s"
     var df = sqlContext.read.format("jdbc").options(Map("url" -> url, "user" -> property(1), "password" -> property(2), "dbtable" -> query, "driver" -> "oracle.jdbc.driver.OracleDriver")).load()
     df.printSchema()
     df.show
@@ -55,9 +54,6 @@ object App {
       .when(col("ts") === "O", 1)
       .otherwise("Unknown")).drop("ts")
 
-    // calculate the right quantity of medication
-
-    df = df.withColumn("quantite_med",col("quantite_med") - col("quantite_rejetee")).drop("quantite_rejetee")
 
     // Transform the spark data frame to RDD
     val rows: RDD[Row] = df.rdd
@@ -66,7 +62,7 @@ object App {
     /** **********************  Load  *********************** */
 
     val conf = new SparkConf(true).set("spark.cassandra.connection.host", "127.0.0.1");
-    rows.saveToCassandra("frauddetection", "quantity_verified", SomeColumns("id", "affection", "age", "date_paiment", "codeps", "fk", "num_enr", "quantite_med", "region", "no_assure", "gender", "ts"));
+    rows.saveToCassandra("cnas", "cnas", SomeColumns("id", "affection", "age", "date_paiment", "codeps", "fk", "num_enr", "quantite_med", "region", "no_assure", "gender", "prix_ppa","ts"));
 
 
     /* Verification
